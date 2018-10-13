@@ -9,13 +9,13 @@
       <div class="modal-content">
           <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-              <h4 class="modal-title" id="myModalLabel">Login to site.com</h4>
+              <h4 class="modal-title" id="myModalLabel">Sign Up!</h4>
           </div>
           <div class="modal-body">
               <div class="row">
-                  <div class="col-xs-6">
+                  <div class="col-xs-12">
                       <div class="well">
-                          <form id="loginForm" method="POST" action="/login" novalidate="novalidate">
+                          <form id="loginForm" action="" method="POST" novalidate>
                               <div class="form-group">
                                   <label for="username" class="control-label">Username</label>
                                   <input type="text" class="form-control" id="username" name="username" value="" required="" title="Please enter you username" placeholder="example@gmail.com">
@@ -26,24 +26,15 @@
                                   <input type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password">
                                   <span class="help-block"></span>
                               </div>
+                              <div class="form-group">
+                                    <label for="password" class="control-label">Verify Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password">
+                                    <span class="help-block"></span>
+                                </div>
                               <div id="loginErrorMsg" class="alert alert-error hide">Wrong username og password</div>
-                              <div class="checkbox">
-                                  <label>
-                                      <input type="checkbox" name="remember" id="remember"> Remember login
-                                  </label>
-                              </div>
-                              <button type="submit" class="btn btn-success btn-block">Login</button>
+                              <button type="submit" class="btn btn-success btn-block">Register</button>
                           </form>
                       </div>
-                  </div>
-                  <div class="col-xs-6">
-                      <p class="lead">Register now for <span class="text-success">FREE</span></p>
-                      <ul class="list-unstyled" style="line-height: 2">
-                          <li><span class="fa fa-check text-success"></span> Track your created petitions</li>
-                          <li><span class="fa fa-check text-success"></span> Search for other worthy causes</li>
-                          <li><span class="fa fa-check text-success"></span> Make your voice heard</li>
-                      </ul>
-                      <p><a href="/new-customer" class="btn btn-info btn-block">Yes please, register now!</a></p>
                   </div>
               </div>
           </div>
