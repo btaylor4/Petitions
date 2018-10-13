@@ -75,7 +75,11 @@ def login():
                 login_user(user)
                 return redirect(url_for('home')) # send to page with video functionality
         return 'Invalid Credentials. Please try again.'
-    return render_template('login.html')  
+    return render_template('login.html')
+
+@app.route('/start-petition', methods=['GET', 'POST']) # sets up the page for registration
+def start_petition():
+    return render_template('start_petition.html')  
 
 @app.route("/")
 def index():
