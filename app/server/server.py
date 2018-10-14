@@ -81,6 +81,10 @@ def login():
 def start_petition():
     return render_template('start_petition.html')  
 
+@app.route('/dashboard', methods=['GET', 'POST']) # sets up the page for registration
+def dashboard():
+    return render_template('dashboard.html')  
+
 @app.route("/")
 def index():
     return render_template("index.html")
