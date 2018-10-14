@@ -42,12 +42,11 @@
                         <p>Description:</p>
                     </div>
                     <button class="w3-button" onclick="document.getElementById('dash-modal').style.display='none'">Cancel</button>
-                    <button class="w3-button">Follow Petition</button>
+                    <button class="w3-button" onclick="sendDocument()">Follow Petition</button>
             </div>   
         <div>
      </div>
     </div>
-
     <script>
         var petitions
         var protocol = 'https://'
@@ -66,6 +65,15 @@
                     console.log(petitions)
                     break;
             }
+        }
+
+        function sendDocument() {
+            let message = {
+                type: 'sendDocument'
+            }
+
+            socket.emit('message', message)
+            document.getElementById('dash-modal').style.display='none'
         }
 
         function addMarkerToGroup(group, coordinate, html) {

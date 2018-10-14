@@ -2,6 +2,7 @@ Flask
 Flask-PyMongo
 Flask-SocketIO
 Flask-Login
+docusign_esign
 
 # Production
 gunicorn

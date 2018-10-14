@@ -7,14 +7,14 @@ import docusign_esign as docusign
 from docusign_esign import AuthenticationApi, TemplatesApi, EnvelopesApi
 from docusign_esign.rest import ApiException
 
-user_name = "f7a5099d-7db6-436d-8137-648245fafc1e"
-integrator_key = "26e90a41-dcda-4a2d-b295-427c24adf7f3"
+user_name = "60d34380-6d41-4fa8-9701-05490acea776"
+integrator_key = "ac3eeaa0-7124-4209-807c-31e073a80f7d"
 base_url = "https://demo.docusign.net/restapi"
 oauth_base_url = "account-d.docusign.com" # use account.docusign.com for Live/Production
 redirect_uri = "https://www.docusign.com/api"
 private_key_filename = "keys/docusign_private_key.txt"
-user_id = "f7a5099d-7db6-436d-8137-648245fafc1e"
-template_id = "[TEMPLATE_ID]"
+user_id = "60d34380-6d41-4fa8-9701-05490acea776"
+template_id = "e82be205-2edb-46da-98e6-e9c20417b474"
 
 api_client = docusign.ApiClient(base_url)
 
@@ -35,7 +35,7 @@ api_client.configure_jwt_authorization_flow(private_key_filename, oauth_base_url
 
 docusign.configuration.api_client = api_client
 
-template_role_name = 'Needs to sign'
+template_role_name = 'test'
 
 # create an envelope to be signed
 envelope_definition = docusign.EnvelopeDefinition()
@@ -47,9 +47,9 @@ envelope_definition.template_id = 'e9c3e7ad-4d91-4a1d-ac61-efcf8ef4bea7'
 
 # create a template role with a valid template_id and role_name and assign signer info
 t_role = docusign.TemplateRole()
-t_role.role_name = 'signer'
+t_role.role_name = 'test'
 t_role.name ='Signer'
-t_role.email = 'kawebb@sdsu.edu'
+t_role.email = 'clearly.b.t@gmail.com'
 
 # create a list of template roles and add our newly created role
 # assign template role(s) to the envelope
