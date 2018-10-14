@@ -46,6 +46,9 @@ class User():
     def get_id(self):
         return self.username
 
+def sendToRoom(connection, message):
+    connection.send(message, room=message["room"])
+
 @app.route('/new-customer', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -76,6 +79,64 @@ def login():
                 return redirect(url_for('dashboard')) # send to page with video functionality
         return 'Invalid Credentials. Please try again.'
     return render_template('login.html')
+
+@socketio.on('message')
+def handle_message(message): # server has recieved a message from a client
+    print(message)
+    if(message['type'] == 'coordinates'):
+        petitions = mongo.db.petitions.find_one({'username': message['username']})
+
+        petition = {
+                'petition_name': message['petition_name'],
+                'petition_decr': message['petition_name'] ,
+                'lng': message['lng'],
+                'lat': message['lat']
+        }
+
+        if petitions:
+            p_list = list(petitions['petitions'])
+            p_list.append(petition)
+            mongo.db.users.update_one(
+                { "username" : message["username"]},
+                { "$set": 
+                    {
+                        "petitions": p_list
+                    } 
+                }
+            )
+
+        else:
+            p_list = list()
+            p_list.append(petition)
+            print(p_list)
+            mongo.db.petitions.insert_one(
+                { "username" : message["username"]},
+                { "petitions": [] } 
+            )
+
+            mongo.db.petitions.update_one(
+                { "username" : message["username"]},
+                { "$set": 
+                    {
+                        "petitions": p_list
+                    }
+                }
+            )
+
+    elif(message['type'] == 'getPetitions'):
+        room = connectedUsers[message["username"]]
+
+        all_p = mongo.db.petitions.find()
+        p_list = list()
+        for message in all_p:
+            for petitions in list(message['petitions']):
+                p_list.append(petitions)
+
+        sendToRoom(socketio, {
+            "type": "gotPetitions", 
+            "petitions": json.loads(json_util.dumps(p_list)),
+            "room": room
+        })
 
 @app.route('/start-petition', methods=['GET', 'POST']) # sets up the page for registration
 def start_petition():

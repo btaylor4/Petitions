@@ -1,0 +1,153 @@
+<html>
+  <head>
+  <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="static/css/dashboard-style.css">
+  <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js"
+  type="text/javascript" charset="utf-8"></script>
+  <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js"
+  type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+
+  </head>
+  <body onload="getLocation()">
+      <!-- Sidebar -->
+      <div class="topnav">
+        <a class="active" href="/dashboard">Home</a>
+        </div>
+    <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:25%">
+        <h3 class="w3-bar-item">Your Petitions</h3>
+        <a href="#" class="w3-bar-item w3-button">Petitions Created</a>
+        <a href="#" class="w3-bar-item w3-button">Petitions apart of</a>
+    </div>
+
+    <!-- Page Content -->
+    <div class="container">
+        <div style="margin-left:25%">
+            <div class="w3-container w3-teal">
+                <h1>Speak Your Mind</h1>
+            </div>
+            <div style="height: 400px;" id="mapContainer"></div>  
+        <div><a type="button" href="/start-petition">Submit New Petition</a></div>
+     </div>
+    </div>
+
+    <script>
+        var petitions
+        var protocol = 'https://'
+
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1"){
+            protocol = 'http://'
+        }
+
+        var socket = io.connect(protocol + document.domain + ':' + location.port);
+
+        socket.on('message', onMessage)
+        function onMessage(evt) {
+            switch(evt.type) {
+                case 'gotPetitions':
+                    petitions = evt.petitions
+                    console.log(petitions)
+                    break;
+            }
+        }
+
+        function addMarkerToGroup(group, coordinate, html) {
+            var marker = new H.map.Marker(coordinate);
+            // add custom data to the marker
+            marker.setData(html);
+            group.addObject(marker);
+        }
+
+        function getLocation() {
+            var protocol = 'https://'
+            var session = window.localStorage;
+            if (location.hostname === "localhost" || location.hostname === "127.0.0.1"){
+                protocol = 'http://'
+            }
+
+            var socket = io.connect(protocol + document.domain + ':' + location.port);
+            var message = {
+                username: session.getItem('username'),
+                type: 'getPetitions'
+            }
+
+            socket.emit('message', message)
+
+            setTimeout(function() { displayLocationInfo(petitions) } , 2500); 
+        }
+        
+        function displayLocationInfo(petitions) {
+            var lng
+            var lat
+
+            if(petitions && petitions[0]) {
+                lng = petitions[0]["lng"]
+                lat = petitions[0]["lat"]
+            }
+
+            // Initialize the platform object:
+            var platform = new H.service.Platform({
+                'app_id': 'ULv0tJ0nRBCSrOovTlCK',
+                'app_code': '_rSxgs124NBW1jCUSBMQ6Q'
+            });
+
+            var pixelRatio = window.devicePixelRatio || 1;
+            var defaultLayers = platform.createDefaultLayers({
+                tileSize: pixelRatio === 1 ? 256 : 512,
+                ppi: pixelRatio === 1 ? undefined : 320
+            });
+
+            //Step 2: initialize a map  - not specificing a location will give a whole world view.
+            var map = new H.Map(document.getElementById('mapContainer'),
+                defaultLayers.normal.map, {pixelRatio: pixelRatio});          
+
+            // Define a variable holding SVG mark-up that defines an icon image:
+            var svgMarkup = '<svg height="50pt" viewBox="-126 0 512 512" width="50pt" xmlns="http://www.w3.org/2000/svg"><g fill-rule="evenodd"><path d="m130.179688 250.359375c66.191406 0 120.179687-53.988281 120.179687-120.179687 0-66.191407-53.988281-120.179688-120.179687-120.179688-66.191407 0-120.179688 53.988281-120.179688 120.179688 0 66.191406 53.988281 120.179687 120.179688 120.179687zm0 0" fill="#ff5d5d"/><path d="m130.179688 502c37.996093 0 68.984374-14.8125 68.984374-32.972656 0-18.164063-30.988281-32.976563-68.984374-32.976563-37.992188 0-68.984376 14.8125-68.984376 32.976563 0 18.160156 30.988282 32.972656 68.984376 32.972656zm0 0" fill="#a0e557"/><path d="m130.179688 0c-71.78125 0-130.179688 58.398438-130.179688 130.179688 0 68.417968 53.054688 124.675781 120.179688 129.800781v41.417969c0 5.523437 4.476562 10 10 10 5.523437 0 10-4.476563 10-10v-41.417969c67.128906-5.125 120.179687-61.382813 120.179687-129.800781 0-71.78125-58.398437-130.179688-130.179687-130.179688zm0 240.359375c-60.753907 0-110.179688-49.425781-110.179688-110.179687 0-60.753907 49.425781-110.179688 110.179688-110.179688 60.753906 0 110.179687 49.425781 110.179687 110.179688 0 60.753906-49.425781 110.179687-110.179687 110.179687zm0 0"/><path d="m130.179688 43.558594c-47.761719 0-86.621094 38.855468-86.621094 86.621094 0 5.523437 4.476562 10 10 10 5.523437 0 10-4.476563 10-10 0-36.734376 29.886718-66.621094 66.621094-66.621094 5.523437 0 10-4.476563 10-10 0-5.523438-4.476563-10-10-10zm0 0"/><path d="m140.179688 426.378906v-44.980468c0-5.519532-4.476563-10-10-10-5.523438 0-10 4.480468-10 10v44.976562c-39.957032 2.515625-68.984376 20.003906-68.984376 42.652344 0 24.496094 33.957032 42.972656 78.984376 42.972656 45.03125 0 78.984374-18.476562 78.984374-42.972656 0-22.648438-29.027343-40.132813-68.984374-42.648438zm-10 65.621094c-36.003907 0-58.984376-13.605469-58.984376-22.972656 0-8.46875 18.78125-20.398438 48.984376-22.613282v22.613282c0 5.519531 4.476562 10 10 10 5.523437 0 10-4.480469 10-10v-22.613282c30.207031 2.214844 48.984374 14.144532 48.984374 22.613282 0 9.367187-22.976562 22.972656-58.984374 22.972656zm0 0"/><path d="m130.179688 351.398438c5.507812 0 10-4.492188 10-10 0-5.507813-4.492188-10-10-10-5.507813 0-10 4.492187-10 10 0 5.507812 4.492187 10 10 10zm0 0"/></g></svg>';
+
+            // Create an icon, an object holding the latitude and longitude, and a marker:
+            var icon = new H.map.Icon(svgMarkup),
+            coords = {lat: lat, lng: lng},
+            marker = new H.map.Marker(coords, {icon: icon});
+
+            map.setCenter(coords);
+            map.setZoom(14);
+
+            //Step 3: make the map interactive
+            // MapEvents enables the event system
+            // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+            var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+            // Create the default UI components
+            var ui = H.ui.UI.createDefault(map, defaultLayers);
+            var group = new H.map.Group();
+
+            map.addObject(group);
+
+            // add 'tap' event listener, that opens info bubble, to the group
+            group.addEventListener('tap', function (evt) {
+                console.log("Event ", evt.target.getData())
+                var bubble =  new H.ui.InfoBubble(evt.target.getPosition(), {
+                    // read custom data
+                    content: evt.target.getData()
+                });
+
+                // show info bubble
+                ui.addBubble(bubble);
+                bubble.open()
+            }, false);
+
+
+            marker.setData('<div>HELLO</div>');
+
+            group.addObject(marker)
+            map.addObject(group)
+        }
+    </script>
+  <script>
+        
+  </script>
+  </body>
+</html>

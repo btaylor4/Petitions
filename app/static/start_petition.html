@@ -1,10 +1,17 @@
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="static/css/dashboard-style.css">
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+
 <!------ Include the above in your HEAD tag ---------->
 
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
+<!-- Sidebar -->
+<div class="topnav">
+        <a class="active" href="/dashboard">Home</a>
+        </div>
     <div id="login-overlay" class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
@@ -15,26 +22,60 @@
               <div class="row">
                   <div class="col-xs-12">
                       <div class="well">
-                          <form id="loginForm" method="POST" action="/login" novalidate="novalidate">
-                              <div class="form-group">
-                                  <label for="username" class="control-label">Petition</label>
-                                  <input type="text" class="form-control" id="name" name="name" value="" required="" placeholder="">
-                                  <span class="help-block"></span>
-                              </div>
-
-                              <hr />
-
-                              <div class="form-group">
-                                    <label for="exampleFormControlTextarea1">Petition Description</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                </div>
-
-                                <br />
-                              <button type="submit" class="btn btn-success btn-block">Submit Petition</button>
-                          </form>
+                            <div class="form-group">
+                                <label for="username" class="control-label">Petition</label>
+                                <input type="text" class="form-control" id="name" name="name" value="" required="" placeholder="">
+                                <span class="help-block"></span>
+                            </div>
+  
+                            <hr />
+  
+                            <div>
+                                <label for="exampleFormControlTextarea1">Petition Description</label>
+                                <textarea class="form-control" id="textarea" rows="3"></textarea>
+                            </div>
+  
+                            <br />
+                            <button type="submit" onClick="submitPetition()" class="btn btn-success btn-block">Submit Petition</button>
                       </div>
                   </div>
               </div>
           </div>
       </div>
   </div>
+  <script>
+      function getLocation() {
+          console.log("get location")
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(displayLocationInfo);
+            }
+        }
+
+        function displayLocationInfo(position) {
+            var session = window.localStorage;
+            const lng = position.coords.longitude;
+            const lat = position.coords.latitude;
+
+            var message = {
+                type: "coordinates",
+                username: session.getItem('username'),
+                petition_name: document.getElementById('name').textContent,
+                petition_decr: document.getElementById('textarea').textContent,
+                lng: lng,
+                lat: lat
+            }
+
+            var protocol = 'https://'
+            if (location.hostname === "localhost" || location.hostname === "127.0.0.1"){
+                protocol = 'http://'
+            }
+
+            var socket = io.connect(protocol + document.domain + ':' + location.port);
+            socket.emit('message', message)
+            setTimeout(function() { window.location.pathname = '/dashboard' } , 2500);   
+        }
+
+        function submitPetition() {
+            getLocation()
+        }
+  </script>
