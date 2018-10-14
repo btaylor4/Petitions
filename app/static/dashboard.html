@@ -29,8 +29,22 @@
             <div class="w3-container w3-teal">
                 <h1>Speak Your Mind</h1>
             </div>
-            <div style="height: 400px;" id="mapContainer"></div>  
-        <div><a type="button" href="/start-petition">Submit New Petition</a></div>
+            <div style="height: 400px;" id="mapContainer"></div>
+            <a type="button" href="/start-petition">Submit New Petition</a></div>
+            <div id="dash-modal" class="w3-modal">
+                <div class="w3-modal-content w3-card-4">
+                    <header class="w3-container w3-teal"> 
+                        <span onclick="document.getElementById('dash-modal').style.display='none'" 
+                            class="w3-button w3-display-topright">&times;</span>
+                        <h2>Petition Name:</h2>
+                    </header>
+                    <div class="w3-container">
+                        <p>Description:</p>
+                    </div>
+                    <button class="w3-button" onclick="document.getElementById('dash-modal').style.display='none'">Cancel</button>
+                    <button class="w3-button">Follow Petition</button>
+            </div>   
+        <div>
      </div>
     </div>
 
@@ -128,19 +142,11 @@
 
             // add 'tap' event listener, that opens info bubble, to the group
             group.addEventListener('tap', function (evt) {
-                console.log("Event ", evt.target.getData())
-                var bubble =  new H.ui.InfoBubble(evt.target.getPosition(), {
-                    // read custom data
-                    content: evt.target.getData()
-                });
-
-                // show info bubble
-                ui.addBubble(bubble);
-                bubble.open()
+                document.getElementById('dash-modal').style.display='block'
             }, false);
 
 
-            marker.setData('<div>HELLO</div>');
+            marker.setData('<div id="uniqueMarker"></div>');
 
             group.addObject(marker)
             map.addObject(group)
