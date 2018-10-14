@@ -73,7 +73,7 @@ def login():
                 connectedUsers[request.form['username']] = None
                 user = User(username=request.form['username'])
                 login_user(user)
-                return redirect(url_for('home')) # send to page with video functionality
+                return redirect(url_for('dashboard')) # send to page with video functionality
         return 'Invalid Credentials. Please try again.'
     return render_template('login.html')
 
