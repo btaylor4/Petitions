@@ -21,6 +21,9 @@
         <h3 class="w3-bar-item">Your Petitions</h3>
         <a href="#" class="w3-bar-item w3-button">Petitions Created</a>
         <a href="#" class="w3-bar-item w3-button">Petitions apart of</a>
+        <hr/>
+
+        <a type="button" href="/start-petition">Submit New Petition</a>
     </div>
 
     <!-- Page Content -->
@@ -30,16 +33,16 @@
                 <h1>Speak Your Mind</h1>
             </div>
             <div style="height: 400px;" id="mapContainer"></div>
-            <a type="button" href="/start-petition">Submit New Petition</a></div>
+        </div>
             <div id="dash-modal" class="w3-modal">
                 <div class="w3-modal-content w3-card-4">
                     <header class="w3-container w3-teal"> 
                         <span onclick="document.getElementById('dash-modal').style.display='none'" 
                             class="w3-button w3-display-topright">&times;</span>
-                        <h2>Petition Name:</h2>
+                        <h2 id="modal-petition-name">Petition Name:</h2>
                     </header>
                     <div class="w3-container">
-                        <p>Description:</p>
+                        <p id="modal-petition-descr">Description:</p>
                     </div>
                     <button class="w3-button" onclick="document.getElementById('dash-modal').style.display='none'">Cancel</button>
                     <button class="w3-button" onclick="sendDocument()">Follow Petition</button>
@@ -150,18 +153,24 @@
 
             // add 'tap' event listener, that opens info bubble, to the group
             group.addEventListener('tap', function (evt) {
+                var position = evt.target.getPosition()
+                console.log(position)
+
+                petitions.forEach(element => {
+                    if(element.lng == position.lng && element.lat == position.lat) {
+                        var decrtext = document.getElementById('modal-petition-descr').innerText
+                        var name = document.getElementById('modal-petition-name').innerText
+                        document.getElementById('modal-petition-name').innerText = name+ " " + element.petition_name
+                        document.getElementById('modal-petition-descr').innerText = decrtext + " " + element.petition_decr
+                    }
+                });
+
                 document.getElementById('dash-modal').style.display='block'
             }, false);
-
-
-            marker.setData('<div id="uniqueMarker"></div>');
 
             group.addObject(marker)
             map.addObject(group)
         }
     </script>
-  <script>
-        
-  </script>
   </body>
 </html>

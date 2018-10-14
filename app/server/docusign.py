@@ -8,25 +8,25 @@ from docusign_esign import AuthenticationApi, TemplatesApi, EnvelopesApi
 from docusign_esign.rest import ApiException
 
 user_name = "60d34380-6d41-4fa8-9701-05490acea776"
-integrator_key = "ac3eeaa0-7124-4209-807c-31e073a80f7d"
+integrator_key = "fe7f0a39-3572-4979-9fa7-79f38d969132"
 base_url = "https://demo.docusign.net/restapi"
 oauth_base_url = "account-d.docusign.com" # use account.docusign.com for Live/Production
 redirect_uri = "https://www.docusign.com/api"
-private_key_filename = "keys/docusign_private_key.txt"
+private_key_filename = "server/keys/docusign_private_key.txt"
 user_id = "60d34380-6d41-4fa8-9701-05490acea776"
 template_id = "e82be205-2edb-46da-98e6-e9c20417b474"
 
 api_client = docusign.ApiClient(base_url)
 
-print('this runs!')
+file_content = open(private_key_filename, 'rb').read()
+print(file_content)
 
 # IMPORTANT NOTE:
 # the first time you ask for a JWT access token, you should grant access by making the following call
 # get DocuSign OAuth authorization url:
-oauth_login_url = api_client.get_jwt_uri(integrator_key, redirect_uri, oauth_base_url)
+# oauth_login_url = api_client.get_jwt_uri(integrator_key, redirect_uri, oauth_base_url)
 # open DocuSign OAuth authorization url in the browser, login and grant access
 # webbrowser.open_new_tab(oauth_login_url)
-print(oauth_login_url)
 
 # END OF NOTE
 
@@ -43,7 +43,7 @@ envelope_definition.email_subject = 'Please Sign my Python SDK Envelope'
 envelope_definition.email_blurb = 'Hello, Please sign my Python SDK Envelope.'
 
 # assign template information including ID and role(s)
-envelope_definition.template_id = 'e9c3e7ad-4d91-4a1d-ac61-efcf8ef4bea7'
+envelope_definition.template_id = 'e82be205-2edb-46da-98e6-e9c20417b474'
 
 # create a template role with a valid template_id and role_name and assign signer info
 t_role = docusign.TemplateRole()

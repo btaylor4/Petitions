@@ -59,8 +59,8 @@
             var message = {
                 type: "coordinates",
                 username: session.getItem('username'),
-                petition_name: document.getElementById('name').textContent,
-                petition_decr: document.getElementById('textarea').textContent,
+                petition_name: document.getElementById('name').value,
+                petition_decr: document.getElementById('textarea').value,
                 lng: lng,
                 lat: lat
             }
